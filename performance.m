@@ -19,4 +19,5 @@ FAR = sum(extra_dist <= Seuil_opt) / N_extra;    %Compte combien de fausses corr
 fprintf('FRR = %.4f\n',FRR*100);
 fprintf('FAR = %.4f\n', FAR*100);
 
+
 end

@@ -1,0 +1,22 @@
+function Performance()
+% Calcul du FRR (False Rejection Rate) et FAR (False Acceptance Rate)
+
+% Chargement des données
+load('Intra_dist.mat');   
+load('Extra_dist.mat');   
+load('Seuil_opt.mat');    % seuil optimal
+
+% Nombre total de tests
+N_intra = length(intra_dist);
+N_extra = length(extra_dist);
+
+% FRR : les distances intra-classe supérieures au seuil(non rejetee)
+FRR = sum(intra_dist > Seuil_opt) / N_intra;
+
+% FAR : les distances extra-classe inférieures ou égales au seuil
+FAR = sum(extra_dist <= Seuil_opt) / N_extra;    %Compte combien de fausses correspondances sont acceptées
+
+fprintf('FRR = %.4f\n',FRR*100);
+fprintf('FAR = %.4f\n', FAR*100);
+
+end

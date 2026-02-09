@@ -1,0 +1,70 @@
+function Seuil()
+% je Calcule des distances intra-classe et extra-classe
+% puis calcul du seuil optimal
+
+
+load('Mattrain.mat'); % Charger des matrices Train et Test
+load('Mattest.mat');
+
+intra_dist = [];
+extra_dist = [];
+
+fprintf('Calcul des distances intra-classe...\n');
+
+% Tests intra-classe
+% Chaque vecteur test est comparé aux 5 vecteurs train de sa propre classe
+for person_id = 1:40
+    for i = 1:5
+        v_test = test_mat(:, 5*(person_id-1) + i);    %le //1 er vecteur test
+        for j = 1:5
+            v_train = train_mat(:, 5*(person_id-1) + j);
+            d = norm(v_test - v_train);                                                
+            intra_dist = [intra_dist d];
+        end
+    end
+end
+
+fprintf('Distances intra-classe calculées: %d\n', length(intra_dist));
+fprintf('Calcul des distances extra-classe...\n');
+
+% Tests extra-classe
+% Le premier vecteur test de chaque classe est comparé 
+% au premier vecteur train de toutes les autres classes
+for person_id_1 = 1:40
+    v_test = test_mat(:, 5*(person_id_1-1) + 1);  %Prend le premier vecteur test de chaque personne.
+    for person_id_2 = 1:40
+        if person_id_1 == person_id_2     %saute la comparaison avec soi-même
+            continue;
+        end
+        v_train = train_mat(:, 5*(person_id_2-1) + 1);
+        d = norm(v_test - v_train);
+        extra_dist = [extra_dist d];
+    end
+end
+
+fprintf('Distances extra-classe calculées: %d\n', length(extra_dist));
+
+% Sauvegarde des distances dans le dossier courant
+save('Intra_dist.mat', 'intra_dist');
+save('Extra_dist.mat', 'extra_dist');
+
+% Calcul du seuil optimal
+max_intra = max(intra_dist);
+min_extra = min(extra_dist);
+Seuil_opt = (max_intra + min_extra) / 2;
+
+% Sauvegarde du seuil
+save('Seuil_opt.mat', 'Seuil_opt', 'max_intra', 'min_extra');
+
+% Affichage des résultats
+fprintf('\nRÉSULTATS \n');
+fprintf('Max des distances intra-classe: %.4f\n', max_intra);
+fprintf('Min des distances extra-classe: %.4f\n', min_extra);
+fprintf('Seuil optimal calculé: %.4f\n', Seuil_opt);
+
+
+
+
+
+
+end
